@@ -1,0 +1,12 @@
+# TODO: Fix this! .env must be example.env
+#/.env
+/images/
+/override.env
+_*
+
+# Editors
+/.vscode
+/.idea
+.ruff.toml
+.mypy.ini
+.flake8

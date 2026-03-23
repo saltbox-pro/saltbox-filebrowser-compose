@@ -1,0 +1,51 @@
+server:
+  port: 80
+  database: /home/filebrowser/database.db
+  sources:
+    - path: /srv/sshfs
+      config:
+        defaultEnabled: true
+    - path: /srv/salt
+      config:
+        defaultEnabled: true
+    - path: /srv/saltbox_salt
+      config:
+        defaultEnabled: true
+auth:
+  methods:
+    noauth: true
+userDefaults:
+  editorQuickSave: true
+  hideSidebarFileActions: false
+  disableQuickToggles: false
+  disableSearchOptions: false
+  darkMode: false
+  locale: "en"
+  showHidden: true
+  quickDownload: true
+  preview:
+    disableHideSidebar: false
+    highQuality: true
+    image: true
+    video: true
+    motionVideoPreview: true
+    popup: true
+    autoplayMedia: true
+    defaultMediaPlayer: false
+    folder: true
+  permissions:
+    api: true
+    admin: true
+    modify: true
+    share: true
+    realtime: true
+    delete: true
+    create: true
+    download: true
+frontend:
+  name: "Salt.Box"
+  description: "Salt.Box SSHFS manager"
+  externalLinks:
+    - text: "Documentation"
+      title: "View documentation"
+      url: "https://saltbox.pro/docs/next/intro"
