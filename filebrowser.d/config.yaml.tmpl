@@ -2,15 +2,34 @@ server:
   port: 80
   database: /home/filebrowser/database.db
   sources:
-    - path: /srv/sshfs
+    - path: "/srv/salt"
+      name: "salt"
       config:
+        denyByDefault: false
+        private: false
+        disabled: false
+        indexingIntervalMinutes: 0
+        disableIndexing: false
+        conditionals:
+          hidden: false
+          ignoreHidden: false
+          ignoreZeroSizeFolders: false
+          rules:
         defaultEnabled: true
-    - path: /srv/salt
-      config:
-        defaultEnabled: true
-    - path: /srv/saltbox_salt
-      config:
-        defaultEnabled: true
+        createUserDir: false
+${MIGRATOR_SOURCE_BLOCK}
+  logging:
+    # Terminal
+    - output: stdout
+      levels: "info|warning|error"
+      apiLevels: disabled
+    # API logs
+    - output: "api-events.log"
+      levels: disabled
+    # Errors
+    - output: "errors.log"
+      levels: "error|warning"
+      apiLevels: disabled
 auth:
   methods:
     noauth: true
@@ -42,10 +61,3 @@ userDefaults:
     delete: true
     create: true
     download: true
-frontend:
-  name: "Salt.Box"
-  description: "Salt.Box SSHFS manager"
-  externalLinks:
-    - text: "Documentation"
-      title: "View documentation"
-      url: "https://saltbox.pro/docs/next/intro"

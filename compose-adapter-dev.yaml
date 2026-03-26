@@ -3,13 +3,12 @@
 ## Salt.Box Compose filebrowser-adapter override file for dev-mode.
 
 services:
-
   saltbox-filebrowser-adapter:
     build:
       context: $FILEBROWSER_ADAPTER_BUILD_DIR
       target: dev
     image: 'saltbox-filebrowser-adapter:dev'
-    tty: true  # colorize logs
+    tty: true
     volumes:
       - '${FILEBROWSER_ADAPTER_BUILD_DIR}:/mnt/saltbox-filebrowser-adapter'
       - '${SDK_DIR}:/mnt/saltbox-sdk'
