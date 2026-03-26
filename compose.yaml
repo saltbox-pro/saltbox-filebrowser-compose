@@ -5,8 +5,7 @@ x-default-service: &default
 services:
   saltbox-filebrowser:
     <<: *default
-    image: "gtstef/filebrowser:${FILEBROWSER_IMAGE_TAG}"
-    # image: "${IMAGE_REGISTRY}/gtstef/filebrowser:${FILEBROWSER_IMAGE_TAG}"
+    image: "${IMAGE_REGISTRY}/gtstef/filebrowser:${FILEBROWSER_IMAGE_TAG}"
     build:
       context: ${FILEBROWSER_COMPOSE_DIR}
       dockerfile: docker/Dockerfile
