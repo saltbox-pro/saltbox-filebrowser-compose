@@ -9,6 +9,7 @@
 ```sh
 # TODO Check the relative Path to FileBrowser Compose
 COMPOSE_FILE="${COMPOSE_FILE}:../saltbox-filebrowser-compose/compose.yaml"
+
 # Optional for development
 #COMPOSE_FILE="${COMPOSE_FILE}:../saltbox-filebrowser-compose/compose-adapter-dev.yaml"
 
