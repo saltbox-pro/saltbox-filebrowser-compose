@@ -16,7 +16,7 @@ services:
       MIGRATION_SOURCE_ENABLED: '${FILEBROWSER_MIGRATOR_SOURCE_ENABLED:-false}'
     volumes:
       - "filebrowser_db:/home/filebrowser"
-      - "${SALT_MASTER_STORAGE_PATH}:/srv/salt"
+      - "${SALT_MASTER_STORAGE_PATH}:/srv/salt_custom/"
       - "${SSHFS_STORAGE_PATH}:/srv/sshfs"
       - "${SSHFS_MIGRATION_PATH}:/srv/migrator"
       - "salt_repos:/srv/saltbox_salt"
