@@ -49,7 +49,7 @@ services:
 
   saltbox-filesystem-frontend:
     <<: *default
-    image: "${IMAGE_REGISTRY}/saltbox-filesystem-frontend:${FRONTEND_IMAGE_TAG}"
+    image: "${IMAGE_REGISTRY}/saltbox-filebrowser-frontend:${FRONTEND_IMAGE_TAG}"
     expose:
       - ${FRONTEND_HTTP_PORT}
 
