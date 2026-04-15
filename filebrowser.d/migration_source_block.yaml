@@ -1,8 +1,8 @@
     - path: "/srv/migrator"
       name: "migrator"
       config:
-        denyByDefault: true
-        private: true
+        denyByDefault: false
+        private: false
         disabled: false
         indexingIntervalMinutes: 0
         disableIndexing: false
