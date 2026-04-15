@@ -6,9 +6,6 @@ services:
   saltbox-filebrowser:
     <<: *default
     image: "${IMAGE_REGISTRY}/gtstef/filebrowser:${FILEBROWSER_IMAGE_TAG}"
-    build:
-      context: ${FILEBROWSER_COMPOSE_DIR}
-      dockerfile: docker/Dockerfile
     user: "0"
     extra_hosts:
       - "localhost:host-gateway"
@@ -18,7 +15,7 @@ services:
       - "filebrowser_db:/home/filebrowser"
       - "${SALT_MASTER_STORAGE_PATH}:/srv/salt_custom/"
       - "${SSHFS_STORAGE_PATH}:/srv/sshfs"
-      - "${SSHFS_MIGRATION_PATH}:/srv/migrator"
+      - "${SSHFS_MIGRATION_PATH}:/srv/migrator/"
       - "salt_repos:/srv/saltbox_salt"
 
   saltbox-filebrowser-adapter:

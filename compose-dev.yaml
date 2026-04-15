@@ -1,0 +1,5 @@
+services:
+  saltbox-filebrowser:
+    build:
+      context: ${FILEBROWSER_COMPOSE_DIR}
+      dockerfile: docker/Dockerfile
