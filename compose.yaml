@@ -5,7 +5,7 @@ x-default-service: &default
 services:
   saltbox-filebrowser:
     <<: *default
-    image: "${IMAGE_REGISTRY}/gtstef/filebrowser:${FILEBROWSER_IMAGE_TAG}"
+    image: "${IMAGE_REGISTRY}/saltbox-filebrowser-compose:${FILEBROWSER_IMAGE_TAG}"
     user: "0"
     extra_hosts:
       - "localhost:host-gateway"
