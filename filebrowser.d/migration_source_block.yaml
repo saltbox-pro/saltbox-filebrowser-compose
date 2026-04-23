@@ -10,7 +10,6 @@
           hidden: false
           ignoreHidden: false
           ignoreZeroSizeFolders: false
-          rules:
         defaultEnabled: true
         createUserDir: false
     - path: "/srv/sshfs/migration/clonezilla"
@@ -25,6 +24,5 @@
           hidden: false
           ignoreHidden: false
           ignoreZeroSizeFolders: false
-          rules:
         defaultEnabled: true
         createUserDir: false
