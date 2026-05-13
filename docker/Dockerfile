@@ -1,6 +1,6 @@
 ARG BASE_IMAGE="gtstef/filebrowser:1.1.1-stable-slim"
 
-FROM "${BASE_IMAGE}"
+FROM ${BASE_IMAGE}
 
 RUN apk add --no-cache gettext
 

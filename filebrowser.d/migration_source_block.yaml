@@ -12,17 +12,3 @@
           ignoreZeroSizeFolders: false
         defaultEnabled: true
         createUserDir: false
-    - path: "/srv/sshfs/migration/clonezilla"
-      name: "Distributed Images"
-      config:
-        denyByDefault: false
-        private: false
-        disabled: false
-        indexingIntervalMinutes: 0
-        disableIndexing: false
-        conditionals:
-          hidden: false
-          ignoreHidden: false
-          ignoreZeroSizeFolders: false
-        defaultEnabled: true
-        createUserDir: false
