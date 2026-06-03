@@ -1,4 +1,3 @@
-# TODO: Fix this! .env must be example.env
 #/.env
 /images/
 /override.env
@@ -10,3 +9,6 @@ _*
 .ruff.toml
 .mypy.ini
 .flake8
+
+# CI
+/.gitlab-ci-local
