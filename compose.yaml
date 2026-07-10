@@ -17,6 +17,7 @@ services:
       - "${SSHFS_STORAGE_PATH}:/srv/sshfs"
       - "${SSHFS_MIGRATION_PATH}:/srv/migrator/"
       - "salt_repos:/srv/saltbox_salt"
+      - "${LOCAL_CONFIG_BOXES_PATH}:/srv/config_boxes/"
 
   saltbox-filebrowser-adapter:
     <<: *default
