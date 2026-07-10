@@ -1,6 +1,11 @@
 x-default-service: &default
   restart: "on-failure"
   stop_grace_period: ${STOP_GRACE_PERIOD}
+  logging:
+    driver: "json-file"
+    options:
+      max-size: "100m"
+      max-file: 10
 
 services:
   saltbox-filebrowser:
