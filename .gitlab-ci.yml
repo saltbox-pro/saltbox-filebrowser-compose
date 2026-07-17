@@ -3,6 +3,8 @@
 include:
   - project: 'saltbox/ci-lib'
     file: 'build-image.yml'
+  - project: 'saltbox/ci-lib'
+    file: 'check-addon-image-tags.yml'
 
 Build FileBrowser Compose image:
   extends: .build-image
