@@ -1,5 +1,5 @@
 x-default-service: &default
-  restart: "on-failure"
+  restart: 'always'
   stop_grace_period: ${STOP_GRACE_PERIOD}
   logging:
     driver: "json-file"
@@ -27,6 +27,7 @@ services:
   saltbox-filebrowser-adapter:
     <<: *default
     image: "${IMAGE_REGISTRY}/saltbox-filebrowser-adapter:${FILEBROWSER_ADAPTER_IMAGE_TAG}"
+    restart: 'on-failure'
     environment:
       ADAPTER_FILEBROWSER_HOST: "${FILEBROWSER_HOST}"
       ADAPTER_FILEBROWSER_PORT: "${FILEBROWSER_PORT:-80}"
