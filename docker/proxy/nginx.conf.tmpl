@@ -1,0 +1,70 @@
+include /etc/nginx/modules/*.conf;
+
+user nginx;
+worker_processes auto;
+error_log /dev/stderr warn;
+pid /var/run/nginx.pid;
+
+# Without this nginx strips the variable from the worker environment and njs
+# can not read it via `process.env`
+env READONLY_MAP_PATH;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+
+    access_log off;
+    sendfile on;
+    server_tokens off;
+    resolver 127.0.0.11 ipv6=off;  # Resolver of Docker
+
+    map $http_upgrade $connection_upgrade {
+        default upgrade;
+        ''      close;
+    }
+
+    js_path /etc/nginx/njs/;
+    js_import users from users_readonly.js;
+
+    server {
+        listen 80;
+
+        # FileBrowser streams uploads itself, no need to buffer them in the proxy
+        client_max_body_size 0;
+
+        # A variable is used to resolve the upstream on every request, so the
+        # proxy survives a restart of the FileBrowser container
+        set $filebrowser "${FILEBROWSER_UPSTREAM}";
+
+        # Adds the `readOnly` hint to every scope of the user response
+        location = /public/api/users {
+            js_content users.handler;
+        }
+
+        # Non-GET methods of `/public/api/users` are passed through untouched
+        location @filebrowser {
+            proxy_pass http://$filebrowser;
+            include /etc/nginx/proxy-filebrowser.conf;
+        }
+
+        # Source of the `/public/api/users` body for the njs subrequest
+        location = /__filebrowser_users {
+            internal;
+            proxy_pass http://$filebrowser/public/api/users$is_args$args;
+            proxy_set_header Accept-Encoding "";  # njs must get a plain body
+            include /etc/nginx/proxy-filebrowser.conf;
+        }
+
+        # /api/resources, /api/raw, /health
+        location / {
+            proxy_pass http://$filebrowser;
+            proxy_buffering off;
+            proxy_request_buffering off;
+            include /etc/nginx/proxy-filebrowser.conf;
+        }
+    }
+}

@@ -1,5 +1,6 @@
     - path: "/srv/migrator"
       name: "Migrator Storage"
+      readOnly: false
       config:
         denyByDefault: false
         private: false

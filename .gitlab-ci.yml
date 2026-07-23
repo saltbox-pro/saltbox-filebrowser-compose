@@ -10,3 +10,9 @@ Build FileBrowser Compose image:
   extends: .build-image
   variables:
     DOCKERFILE: 'docker/Dockerfile'
+
+Build FileBrowser Proxy image:
+  extends: .build-image
+  variables:
+    DOCKERFILE: 'docker/proxy/Dockerfile'
+    REGISTRY_ADDITIONAL_PATH: '/proxy'

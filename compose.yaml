@@ -1,5 +1,5 @@
 x-default-service: &default
-  restart: 'always'
+  restart: "on-failure"
   stop_grace_period: ${STOP_GRACE_PERIOD}
   logging:
     driver: "json-file"
@@ -24,10 +24,22 @@ services:
       - "salt_repos:/srv/saltbox_salt"
       - "${LOCAL_CONFIG_BOXES_PATH}:/srv/config_boxes/"
 
+  saltbox-filebrowser-proxy:
+    <<: *default
+    image: "${IMAGE_REGISTRY}/saltbox-filebrowser-compose/proxy:${FILEBROWSER_PROXY_IMAGE_TAG}"
+    environment:
+      FILEBROWSER_UPSTREAM: "saltbox-filebrowser:80"
+      READONLY_MAP_PATH: "/srv/filebrowser-meta/data/readonly.json"
+    volumes:
+      - "filebrowser_db:/srv/filebrowser-meta:ro"
+    depends_on:
+      saltbox-filebrowser:
+        condition: service_started
+        restart: false
+
   saltbox-filebrowser-adapter:
     <<: *default
     image: "${IMAGE_REGISTRY}/saltbox-filebrowser-adapter:${FILEBROWSER_ADAPTER_IMAGE_TAG}"
-    restart: 'on-failure'
     environment:
       ADAPTER_FILEBROWSER_HOST: "${FILEBROWSER_HOST}"
       ADAPTER_FILEBROWSER_PORT: "${FILEBROWSER_PORT:-80}"
@@ -47,7 +59,7 @@ services:
       saltbox-gateway:
         condition: service_started
         restart: false
-      saltbox-filebrowser:
+      saltbox-filebrowser-proxy:
         condition: service_started
         restart: false
 

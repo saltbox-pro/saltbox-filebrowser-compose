@@ -3,3 +3,8 @@ services:
     build:
       context: ${FILEBROWSER_COMPOSE_DIR}
       dockerfile: docker/Dockerfile
+
+  saltbox-filebrowser-proxy:
+    build:
+      context: ${FILEBROWSER_COMPOSE_DIR}
+      dockerfile: docker/proxy/Dockerfile
