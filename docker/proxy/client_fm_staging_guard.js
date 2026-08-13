@@ -13,8 +13,9 @@ var RECV = "Minion Recv";
 var UPLOAD = "Client FM Uploads";
 var SALT_CUSTOM = "Salt Custom";
 var CUSTOM_UPLOAD_ROOT = "/client-fm-uploads";
-var RECV_PATH = /^\/?[^/]+\/files\/client-fm-downloads\/[^/]+(?:\/[^/]+)?$/;
-var UPLOAD_PATH = /^\/?[^/]+(?:\/[^/]+)?$/;
+var RECV_DIR = /^\/[^/]+\/files\/client-fm-downloads\/[^/]+$/;
+var RECV_FILE = /^\/[^/]+\/files\/client-fm-downloads\/[^/]+\/[^/]+$/;
+var UPLOAD_PATH = /^\/[^/]+(?:\/[^/]+)?$/;
 var QUERY_KEYS = ["files", "source", "sources", "path", "from", "destination", "to"];
 
 function list(value) {
@@ -37,31 +38,77 @@ function decode(value) {
   }
 }
 
-function withSlash(path) {
-  var decoded = decode(path);
+function fullyDecode(value) {
+  var current = String(value);
+  var i;
+  for (i = 0; i < 5; i += 1) {
+    try {
+      var next = decodeURIComponent(current.replace(/\+/g, " "));
+      if (next === current) {
+        return current;
+      }
+      current = next;
+    } catch (e) {
+      return current;
+    }
+  }
+  return null;
+}
+
+function canonicalPath(path) {
+  var decoded = fullyDecode(path);
+  if (decoded == null || decoded.indexOf("\\") !== -1) {
+    return null;
+  }
   if (!decoded) {
     return "";
   }
-  return decoded.charAt(0) === "/" ? decoded : "/" + decoded;
+  if (decoded.charAt(0) !== "/") {
+    decoded = "/" + decoded;
+  }
+  var parts = decoded.split("/");
+  var out = [];
+  var i;
+  var part;
+  for (i = 0; i < parts.length; i += 1) {
+    part = parts[i];
+    if (part === "" || part === ".") {
+      continue;
+    }
+    if (part === "..") {
+      if (out.length === 0) {
+        return null;
+      }
+      out.pop();
+      continue;
+    }
+    out.push(part);
+  }
+  return "/" + out.join("/");
 }
 
-function isSafe(path) {
-  return Boolean(path) && path.indexOf("..") === -1;
+function isRecvFilePath(path) {
+  var canonical = canonicalPath(path);
+  return canonical != null && RECV_FILE.test(canonical);
 }
 
-function isRecvPath(path) {
-  return isSafe(path) && RECV_PATH.test(path);
+function isRecvDirOrFilePath(path) {
+  var canonical = canonicalPath(path);
+  return canonical != null && (RECV_FILE.test(canonical) || RECV_DIR.test(canonical));
 }
 
 function isUploadPath(path) {
-  return isSafe(path) && UPLOAD_PATH.test(path);
+  var canonical = canonicalPath(path);
+  return canonical != null && UPLOAD_PATH.test(canonical);
 }
 
 function isCustomUploadPath(path) {
-  var normalized = withSlash(path);
+  var canonical = canonicalPath(path);
+  if (canonical == null) {
+    return true;
+  }
   return (
-    normalized === CUSTOM_UPLOAD_ROOT ||
-    normalized.indexOf(CUSTOM_UPLOAD_ROOT + "/") === 0
+    canonical === CUSTOM_UPLOAD_ROOT || canonical.indexOf(CUSTOM_UPLOAD_ROOT + "/") === 0
   );
 }
 
@@ -74,15 +121,21 @@ function splitRef(value) {
   return { source: decoded.slice(0, sep), path: decoded.slice(sep + 2) };
 }
 
+function mentionsSource(part, source) {
+  return part === source || part.indexOf(source + "::") === 0;
+}
+
 function mentions(value, source) {
   var decoded = decode(value);
-  if (decoded === source || decoded.indexOf(source + "::") !== -1) {
+  if (mentionsSource(decoded, source)) {
     return true;
   }
   var parts = decoded.split(",");
   var i;
+  var part;
   for (i = 0; i < parts.length; i += 1) {
-    if (parts[i].trim() === source) {
+    part = parts[i].trim();
+    if (mentionsSource(part, source)) {
       return true;
     }
   }
@@ -153,7 +206,7 @@ function inspect(r) {
       upload = true;
     }
     var ref = splitRef(value);
-    if (ref && ref.source === SALT_CUSTOM && isCustomUploadPath(ref.path)) {
+    if (isCustomUploadPath(value) || (ref != null && isCustomUploadPath(ref.path))) {
       customUpload = true;
     }
   });
@@ -191,7 +244,9 @@ function allowRecv(r, files, sources, paths) {
         (r.method === "GET" || r.method === "HEAD") &&
         files.length === 1 &&
         recvFiles.length === 1 &&
-        isRecvPath(recvFiles[0])
+        sources.length === 0 &&
+        paths.length === 0 &&
+        isRecvFilePath(recvFiles[0])
     );
   }
   return yes(
@@ -199,7 +254,7 @@ function allowRecv(r, files, sources, paths) {
       r.method === "DELETE" &&
       onlySource(sources, RECV) &&
       paths.length === 1 &&
-      isRecvPath(decode(paths[0]))
+      isRecvDirOrFilePath(decode(paths[0]))
   );
 }
 
