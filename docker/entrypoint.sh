@@ -19,18 +19,21 @@ else
 fi
 export MIGRATOR_SOURCE_BLOCK
 
+mkdir -p /srv/salt_custom/client-fm-uploads
+
 RENDERED_CONFIG_PATH="$(mktemp)"
 envsubst < "${CONFIG_TMPL_PATH}" > "${RENDERED_CONFIG_PATH}"
 
-# The `readOnly` source flag is a UI hint served to the frontend by the proxy.
-# FileBrowser rejects unknown config keys, so the flag is extracted into a map
+# `readOnly` and `hiddenFromUi` are UI hints served to the frontend by the proxy.
+# FileBrowser rejects unknown config keys, so they are extracted into a map
 # and stripped from the config the backend gets.
-log_info "Writing the read-only sources map to '${READONLY_MAP_PATH}'"
+log_info "Writing the source flags map to '${READONLY_MAP_PATH}'"
 yq -o=json -I=0 \
-  '[.server.sources[] | {"key": (.name // .path), "value": (.readOnly // false)}] | from_entries' \
+  '[.server.sources[] | {"key": (.name // .path), "value": {"readOnly": (.readOnly // false), "hidden": (.hiddenFromUi // false)}}] | from_entries' \
   "${RENDERED_CONFIG_PATH}" > "${READONLY_MAP_PATH}"
 
-yq 'del(.server.sources[].readOnly)' "${RENDERED_CONFIG_PATH}" > "${CONFIG_OUT_PATH}"
+yq 'del(.server.sources[].readOnly) | del(.server.sources[].hiddenFromUi)' \
+  "${RENDERED_CONFIG_PATH}" > "${CONFIG_OUT_PATH}"
 rm -f "${RENDERED_CONFIG_PATH}"
 
 exec filebrowser -c "${CONFIG_OUT_PATH}"

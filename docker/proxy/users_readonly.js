@@ -1,11 +1,12 @@
 /*
  * Injects the `readOnly` flag into every scope of the FileBrowser
- * `/public/api/users` response.
+ * `/public/api/users` response and drops sources marked `hiddenFromUi`.
  *
- * The flag is declared per source in `filebrowser.d/config.yaml.tmpl` and
+ * Both flags are declared per source in `filebrowser.d/config.yaml.tmpl` and
  * extracted into a JSON map by the FileBrowser entrypoint: FileBrowser itself
- * rejects unknown config keys, so it never sees the flag. The flag is a UI hint
- * for the frontend, it does not restrict anything on its own.
+ * rejects unknown config keys, so it never sees them. `readOnly` is a UI hint
+ * for the frontend, it does not restrict anything on its own. Hidden sources
+ * stay available to `/api/raw` and `/api/resources` for internal callers.
  */
 
 import fs from 'fs';
@@ -26,6 +27,14 @@ const DROPPED_HEADERS = [
 
 let cache = { at: 0, map: {} };
 
+function sourceFlags(map, name) {
+    const value = map[name];
+    if (value && typeof value === 'object') {
+        return value;
+    }
+    return { readOnly: value === true, hidden: false };
+}
+
 function readOnlyMap(r) {
     const now = Date.now();
     if (cache.at && now - cache.at < CACHE_TTL_MS) {
@@ -44,8 +53,11 @@ function readOnlyMap(r) {
 
 function patchUser(user, map) {
     if (user && Array.isArray(user.scopes)) {
+        user.scopes = user.scopes.filter(function (scope) {
+            return sourceFlags(map, scope.name).hidden !== true;
+        });
         user.scopes.forEach(function (scope) {
-            scope.readOnly = map[scope.name] === true;
+            scope.readOnly = sourceFlags(map, scope.name).readOnly === true;
         });
     }
     return user;

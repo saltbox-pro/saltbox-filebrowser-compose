@@ -23,6 +23,7 @@ services:
       - "${SSHFS_MIGRATION_PATH}:/srv/migrator/"
       - "salt_repos:/srv/saltbox_salt"
       - "${LOCAL_CONFIG_BOXES_PATH}:/srv/config_boxes/"
+      - "salt_master_minion_files:/srv/minion_file_recv"
 
   saltbox-filebrowser-proxy:
     <<: *default
@@ -72,3 +73,4 @@ services:
 volumes:
   filebrowser_db:
     external: false
+  salt_master_minion_files: {}
