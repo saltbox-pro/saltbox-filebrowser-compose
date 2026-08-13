@@ -5,6 +5,7 @@
  * Minion Recv: GET/HEAD /api/raw or DELETE /api/resources on
  *   …/files/client-fm-downloads/<id>[/<name>]
  * Client FM Uploads: POST/DELETE /api/resources on /<id>[/<name>]
+ *   Extra Filebrowser flags (isDir, override) are allowed on POST.
  * Salt Custom must not reach /client-fm-uploads (including PATCH from/destination).
  * Names/prefixes stay in sync with toolkit DOWNLOAD_STAGING_* / UPLOAD_STAGING_*.
  */
@@ -17,17 +18,24 @@ var RECV_DIR = /^\/[^/]+\/files\/client-fm-downloads\/[^/]+$/;
 var RECV_FILE = /^\/[^/]+\/files\/client-fm-downloads\/[^/]+\/[^/]+$/;
 var UPLOAD_PATH = /^\/[^/]+(?:\/[^/]+)?$/;
 var QUERY_KEYS = ["files", "source", "sources", "path", "from", "destination", "to"];
+var PATH_KEYS = ["path", "from", "destination", "to"];
+
+function isAbsent(value) {
+  return value == null || value === false || value === "";
+}
 
 function list(value) {
   if (Array.isArray(value)) {
     var out = [];
     var i;
     for (i = 0; i < value.length; i += 1) {
-      out.push(String(value[i]));
+      if (!isAbsent(value[i])) {
+        out.push(String(value[i]));
+      }
     }
     return out;
   }
-  return value == null ? [] : [String(value)];
+  return isAbsent(value) ? [] : [String(value)];
 }
 
 function decode(value) {
@@ -174,9 +182,11 @@ function prefixedPaths(files, source) {
   var prefix = source + "::";
   var out = [];
   var i;
+  var decoded;
   for (i = 0; i < files.length; i += 1) {
-    if (files[i].indexOf(prefix) === 0) {
-      out.push(decode(files[i].slice(prefix.length)));
+    decoded = decode(files[i]);
+    if (decoded.indexOf(prefix) === 0) {
+      out.push(decoded.slice(prefix.length));
     }
   }
   return out;
@@ -184,6 +194,10 @@ function prefixedPaths(files, source) {
 
 function onlySource(sources, name) {
   return sources.length === 1 && decode(sources[0]) === name;
+}
+
+function methodOf(r) {
+  return String(r.method || "").toUpperCase();
 }
 
 function yes(ok) {
@@ -206,21 +220,32 @@ function inspect(r) {
       upload = true;
     }
     var ref = splitRef(value);
-    if (isCustomUploadPath(value) || (ref != null && isCustomUploadPath(ref.path))) {
+    if (ref != null && decode(ref.source) === SALT_CUSTOM && isCustomUploadPath(ref.path)) {
       customUpload = true;
     }
   });
 
   if (!customUpload) {
+    var saltCustom = false;
+    var named = sources.concat(list(r.args.sources));
     var i;
     var j;
-    for (i = 0; i < sources.length; i += 1) {
-      if (decode(sources[i]) !== SALT_CUSTOM) {
-        continue;
+    var key;
+    var rawPaths;
+    for (i = 0; i < named.length; i += 1) {
+      if (decode(named[i]) === SALT_CUSTOM) {
+        saltCustom = true;
+        break;
       }
-      for (j = 0; j < paths.length; j += 1) {
-        if (isCustomUploadPath(paths[j])) {
-          customUpload = true;
+    }
+    if (saltCustom) {
+      for (i = 0; i < PATH_KEYS.length; i += 1) {
+        key = PATH_KEYS[i];
+        rawPaths = list(r.args[key]);
+        for (j = 0; j < rawPaths.length; j += 1) {
+          if (splitRef(rawPaths[j]) == null && isCustomUploadPath(rawPaths[j])) {
+            customUpload = true;
+          }
         }
       }
     }
@@ -238,10 +263,11 @@ function inspect(r) {
 
 function allowRecv(r, files, sources, paths) {
   var recvFiles = prefixedPaths(files, RECV);
+  var method = methodOf(r);
   if (recvFiles.length > 0) {
     return yes(
       r.uri.indexOf("/api/raw") === 0 &&
-        (r.method === "GET" || r.method === "HEAD") &&
+        (method === "GET" || method === "HEAD") &&
         files.length === 1 &&
         recvFiles.length === 1 &&
         sources.length === 0 &&
@@ -251,7 +277,7 @@ function allowRecv(r, files, sources, paths) {
   }
   return yes(
     r.uri.indexOf("/api/resources") === 0 &&
-      r.method === "DELETE" &&
+      method === "DELETE" &&
       onlySource(sources, RECV) &&
       paths.length === 1 &&
       isRecvDirOrFilePath(decode(paths[0]))
@@ -259,12 +285,13 @@ function allowRecv(r, files, sources, paths) {
 }
 
 function allowUpload(r, files, sources, paths) {
+  var method = methodOf(r);
   if (prefixedPaths(files, UPLOAD).length > 0) {
     return "0";
   }
   return yes(
     r.uri.indexOf("/api/resources") === 0 &&
-      (r.method === "POST" || r.method === "DELETE") &&
+      (method === "POST" || method === "DELETE") &&
       onlySource(sources, UPLOAD) &&
       paths.length === 1 &&
       isUploadPath(decode(paths[0]))
@@ -272,7 +299,7 @@ function allowUpload(r, files, sources, paths) {
 }
 
 function allow(r) {
-  if (r.method === "OPTIONS") {
+  if (methodOf(r) === "OPTIONS") {
     return "1";
   }
 
