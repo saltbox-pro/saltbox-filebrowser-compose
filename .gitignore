@@ -11,4 +11,5 @@ _*
 .flake8
 
 # CI
+.DS_Store
 /.gitlab-ci-local

@@ -3,16 +3,27 @@
 include:
   - project: 'saltbox/ci-lib'
     file: 'build-image.yml'
+
   - project: 'saltbox/ci-lib'
     file: 'check-addon-image-tags.yml'
+
+  - project: 'saltbox/ci-lib'
+    file: 'mirror-repo.yml'
+
 
 Build FileBrowser Compose image:
   extends: .build-image
   variables:
     DOCKERFILE: 'docker/Dockerfile'
 
+
 Build FileBrowser Proxy image:
   extends: .build-image
   variables:
     DOCKERFILE: 'docker/proxy/Dockerfile'
     REGISTRY_ADDITIONAL_PATH: '/proxy'
+
+
+Mirror Repository:
+  extends: .mirror-repo
+  stage: build
