@@ -29,6 +29,8 @@ http {
 
     js_path /etc/nginx/njs/;
     js_import users from users_readonly.js;
+    js_import staging from client_fm_staging_guard.js;
+    js_set $client_fm_staging_allowed staging.allow;
 
     server {
         listen 80;
@@ -59,7 +61,18 @@ http {
             include /etc/nginx/proxy-filebrowser.conf;
         }
 
-        # /api/resources, /api/raw, /health
+        # /api/resources, /api/raw — client FM staging sources are path-allowlisted
+        location /api/ {
+            if ($client_fm_staging_allowed = "0") {
+                return 403;
+            }
+            proxy_pass http://$filebrowser;
+            proxy_buffering off;
+            proxy_request_buffering off;
+            include /etc/nginx/proxy-filebrowser.conf;
+        }
+
+        # /health and the rest of FileBrowser
         location / {
             proxy_pass http://$filebrowser;
             proxy_buffering off;

@@ -16,6 +16,8 @@ services:
       - "localhost:host-gateway"
     environment:
       MIGRATION_SOURCE_ENABLED: '${FILEBROWSER_MIGRATOR_SOURCE_ENABLED:-false}'
+    networks:
+      - filebrowser_internal
     volumes:
       - "filebrowser_db:/home/filebrowser"
       - "${SALT_MASTER_STORAGE_PATH}:/srv/salt_custom/"
@@ -23,6 +25,7 @@ services:
       - "${SSHFS_MIGRATION_PATH}:/srv/migrator/"
       - "salt_repos:/srv/saltbox_salt"
       - "${LOCAL_CONFIG_BOXES_PATH}:/srv/config_boxes/"
+      - "salt_master_minion_files:/srv/minion_file_recv"
 
   saltbox-filebrowser-proxy:
     <<: *default
@@ -30,6 +33,9 @@ services:
     environment:
       FILEBROWSER_UPSTREAM: "saltbox-filebrowser:80"
       READONLY_MAP_PATH: "/srv/filebrowser-meta/data/readonly.json"
+    networks:
+      - default
+      - filebrowser_internal
     volumes:
       - "filebrowser_db:/srv/filebrowser-meta:ro"
     depends_on:
@@ -72,3 +78,8 @@ services:
 volumes:
   filebrowser_db:
     external: false
+  salt_master_minion_files: {}
+
+networks:
+  filebrowser_internal:
+    internal: true

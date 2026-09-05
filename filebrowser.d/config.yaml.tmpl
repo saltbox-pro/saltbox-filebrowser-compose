@@ -2,8 +2,8 @@ server:
   port: 80
   database: /home/filebrowser/database.db
   sources:
-    # `readOnly` is a UI hint only, it is stripped from the config passed to
-    # FileBrowser and injected into the `/public/api/users` response by the proxy
+    # `readOnly` / `hiddenFromUi` are UI hints only; they are stripped from the
+    # config passed to FileBrowser and applied in `/public/api/users` by the proxy
     - path: "/srv/config_boxes/"
       name: "Custom Config Boxes"
       readOnly: false
@@ -28,6 +28,46 @@ server:
         disabled: false
         indexingIntervalMinutes: 0
         disableIndexing: false
+        conditionals:
+          hidden: false
+          ignoreHidden: false
+          ignoreZeroSizeFolders: false
+          rules:
+            - folderPath: "client-fm-uploads"
+            - folderName: "client-fm-uploads"
+            - neverWatchPath: "client-fm-uploads"
+        defaultEnabled: true
+        createUserDir: false
+    # Internal: client file-manager upload staging (same files as salt://client-fm-uploads/).
+    # Hidden from the File Manager UI; Salt Custom also ignores that folder name.
+    - path: "/srv/salt_custom/client-fm-uploads/"
+      name: "Client FM Uploads"
+      readOnly: false
+      hiddenFromUi: true
+      config:
+        denyByDefault: false
+        private: true
+        disabled: false
+        indexingIntervalMinutes: 0
+        disableIndexing: true
+        conditionals:
+          hidden: false
+          ignoreHidden: false
+          ignoreZeroSizeFolders: false
+        defaultEnabled: true
+        createUserDir: false
+    # Internal: client file-manager download via cp.push recv-cache.
+    # `hiddenFromUi` is stripped like `readOnly` and hides the source in File Manager.
+    - path: "/srv/minion_file_recv/"
+      name: "Minion Recv"
+      readOnly: true
+      hiddenFromUi: true
+      config:
+        denyByDefault: false
+        private: true
+        disabled: false
+        indexingIntervalMinutes: 0
+        disableIndexing: true
         conditionals:
           hidden: false
           ignoreHidden: false
