@@ -1,6 +1,7 @@
 ---
 
 include:
+
   - project: 'saltbox/ci-lib'
     file: 'build-image.yml'
 
@@ -9,6 +10,9 @@ include:
 
   - project: 'saltbox/ci-lib'
     file: 'mirror-repo.yml'
+
+  - project: 'saltbox/ci-lib'
+    file: 'close-github-pr.yml'
 
 
 Build FileBrowser Compose image:
@@ -26,4 +30,9 @@ Build FileBrowser Proxy image:
 
 Mirror Repository:
   extends: .mirror-repo
+  stage: build
+
+
+Check for GitHub PR to close:
+  extends: .close-github-pr
   stage: build
