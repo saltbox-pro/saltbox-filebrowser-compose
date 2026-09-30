@@ -8,12 +8,6 @@ include:
   - project: 'saltbox/ci-lib'
     file: 'check-addon-image-tags.yml'
 
-  - project: 'saltbox/ci-lib'
-    file: 'mirror-repo.yml'
-
-  - project: 'saltbox/ci-lib'
-    file: 'close-github-pr.yml'
-
 
 Build FileBrowser Compose image:
   extends: .build-image
@@ -26,13 +20,3 @@ Build FileBrowser Proxy image:
   variables:
     DOCKERFILE: 'docker/proxy/Dockerfile'
     REGISTRY_ADDITIONAL_PATH: '/proxy'
-
-
-Mirror Repository:
-  extends: .mirror-repo
-  stage: build
-
-
-Check for GitHub PR to close:
-  extends: .close-github-pr
-  stage: build
