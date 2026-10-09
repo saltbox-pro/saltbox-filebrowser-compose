@@ -1,0 +1,21 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [x.x.x] - YYYY-MM-DD
+
+### Added
+
+- `saltbox-filebrowser-proxy` service: an nginx reverse proxy in front of
+  FileBrowser that injects a `readOnly` hint into every scope of the
+  `/public/api/users` response, based on a new `readOnly` flag per source in
+  `filebrowser.d/config.yaml.tmpl`. The Gateway and
+  `saltbox-filebrowser-adapter` now talk to FileBrowser through this proxy.
+  New `FILEBROWSER_PROXY_IMAGE_TAG` variable.
+
+### Changed
+
+### Fixed
