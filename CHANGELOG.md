@@ -5,7 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [x.x.x] - YYYY-MM-DD
+
+## [X.X.X] - YYYY-MM-DD
+
+### Added
+
+- `Salt SSH Roster` source: editable `/srv/roster/` directory with the Salt SSH
+  `roster` file, mounted from the new `SALT_ROSTER_STORAGE_PATH` variable.
+
+### Changed
+
+### Fixed
+
+
+## [0.4.0] - 2026-10-13
 
 ### Added
 
