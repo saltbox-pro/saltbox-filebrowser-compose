@@ -19,7 +19,6 @@ services:
     volumes:
       - "filebrowser_db:/home/filebrowser"
       - "${SALT_MASTER_STORAGE_PATH}:/srv/salt_custom/"
-      - "${SALT_ROSTER_STORAGE_PATH}:/srv/roster/"
       - "${SSHFS_STORAGE_PATH}:/srv/sshfs"
       - "${SSHFS_MIGRATION_PATH}:/srv/migrator/"
       - "salt_repos:/srv/saltbox_salt"

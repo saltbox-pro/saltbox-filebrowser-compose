@@ -10,9 +10,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- `Salt SSH Roster` source: editable `/srv/roster/` directory with the Salt SSH
-  `roster` file, mounted from the new `SALT_ROSTER_STORAGE_PATH` variable.
-
 ### Changed
 
 ### Fixed
