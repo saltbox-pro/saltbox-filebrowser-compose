@@ -10,9 +10,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `README_RU.md` with the Russian version of the README.
+
 ### Changed
 
+- `README.md` rewritten in the common style of Salt.Box READMEs: services,
+  file sources, configuration variables and dev overrides are described.
+
 ### Fixed
+
+- `Config Boxes` and `SSHFS` sources are mounted read-only, the `readOnly`
+  flag only hid write actions in the UI while the FileBrowser API still
+  allowed writing there.
+- README: `compose.yaml` is no longer added to `COMPOSE_FILE` in
+  `override.env`, the `.env` file of this repository already adds it.
 
 
 ## [0.4.0] - 2026-10-13

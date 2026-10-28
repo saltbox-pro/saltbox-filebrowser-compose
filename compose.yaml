@@ -19,9 +19,9 @@ services:
     volumes:
       - "filebrowser_db:/home/filebrowser"
       - "${SALT_MASTER_STORAGE_PATH}:/srv/salt_custom/"
-      - "${SSHFS_STORAGE_PATH}:/srv/sshfs"
+      - "${SSHFS_STORAGE_PATH}:/srv/sshfs:ro"
       - "${SSHFS_MIGRATION_PATH}:/srv/migrator/"
-      - "salt_repos:/srv/saltbox_salt"
+      - "salt_repos:/srv/saltbox_salt:ro"
       - "${LOCAL_CONFIG_BOXES_PATH}:/srv/config_boxes/"
 
   saltbox-filebrowser-proxy:
