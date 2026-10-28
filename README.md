@@ -1,7 +1,7 @@
 <div align = right>
 
-&ensp;[<kbd> <br> EN <br> </kbd>](./README.md)&ensp;
-&ensp;[<kbd> <br> RU <br> </kbd>](./README_RU.md)&ensp;
+&ensp;[<kbd> <br> EN <br> </kbd>](./README.md)&ensp;
+&ensp;[<kbd> <br> RU <br> </kbd>](./README_RU.md)&ensp;
 
 </div>
 
