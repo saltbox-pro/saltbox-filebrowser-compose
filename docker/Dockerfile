@@ -1,8 +1,10 @@
-ARG BASE_IMAGE="gtstef/filebrowser:1.1.1-stable-slim"
+ARG BASE_IMAGE="gtstef/filebrowser:2.0.2-stable"
 
 FROM ${BASE_IMAGE}
 
-RUN apk add --no-cache gettext yq
+USER root
+RUN apk add --no-cache gettext
+USER filebrowser
 
 COPY --chmod=755 docker/entrypoint.sh /docker/entrypoint.sh
 COPY --chmod=655 filebrowser.d/config.yaml.tmpl /docker/config.yaml.tmpl

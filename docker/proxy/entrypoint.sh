@@ -13,6 +13,7 @@ FILEBROWSER_UPSTREAM="${FILEBROWSER_UPSTREAM:-saltbox-filebrowser:80}"
 export FILEBROWSER_UPSTREAM
 
 log_info "Proxying FileBrowser at '${FILEBROWSER_UPSTREAM}'"
+#shellcheck disable=SC2016
 envsubst '${FILEBROWSER_UPSTREAM}' < "${CONFIG_TMPL_PATH}" > "${CONFIG_OUT_PATH}"
 
 exec "${@}"

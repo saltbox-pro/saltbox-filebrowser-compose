@@ -1,81 +1,77 @@
-server:
+http:
   port: 80
-  database: /home/filebrowser/database.db
+  trustProxyHeaders: true
+server:
+  database:
+    path: /home/filebrowser/data/database.sqlite
   sources:
-    # `readOnly` is a UI hint only, it is stripped from the config passed to
-    # FileBrowser and injected into the `/public/api/users` response by the proxy
     - path: "/srv/config_boxes/"
       name: "Custom Config Boxes"
-      readOnly: false
       config:
         denyByDefault: false
         private: false
         disabled: false
-        indexingIntervalMinutes: 0
-        disableIndexing: false
-        conditionals:
-          hidden: false
-          ignoreHidden: false
-          ignoreZeroSizeFolders: false
         defaultEnabled: true
         createUserDir: false
+        defaultPermissions:
+          view: true
+          download: true
+          modify: true
+          delete: true
+          create: true
+          configured: true
     - path: "/srv/salt_custom/"
       name: "Salt Custom"
-      readOnly: false
       config:
         denyByDefault: false
         private: false
         disabled: false
-        indexingIntervalMinutes: 0
-        disableIndexing: false
-        conditionals:
-          hidden: false
-          ignoreHidden: false
-          ignoreZeroSizeFolders: false
         defaultEnabled: true
         createUserDir: false
-    # RW access is danger!
+        defaultPermissions:
+          view: true
+          download: true
+          modify: true
+          delete: true
+          create: true
+          configured: true
     - path: "/srv/saltbox_salt/"
-      name: "Config Boxes"
-      readOnly: true
+      name: "Saltbox Salt"
       config:
         denyByDefault: false
         private: false
         disabled: false
-        indexingIntervalMinutes: 0
-        disableIndexing: false
-        conditionals:
-          hidden: false
-          ignoreHidden: false
-          ignoreZeroSizeFolders: false
         defaultEnabled: true
         createUserDir: false
-    # RW access is danger!
+        defaultPermissions:
+          view: true
+          download: true
+          modify: false
+          delete: false
+          create: false
+          configured: true
     - path: "/srv/sshfs/"
       name: "SSHFS"
-      readOnly: true
       config:
         denyByDefault: false
         private: false
         disabled: false
-        indexingIntervalMinutes: 0
-        disableIndexing: false
-        conditionals:
-          hidden: false
-          ignoreHidden: false
-          ignoreZeroSizeFolders: false
         defaultEnabled: true
         createUserDir: false
+        defaultPermissions:
+          view: true
+          download: true
+          modify: false
+          delete: false
+          create: false
+          configured: true
 ${MIGRATOR_SOURCE_BLOCK}
   logging:
-    # Terminal
     - output: stdout
       levels: "info|warning|error"
       apiLevels: disabled
-    # API logs
     - output: "api-events.log"
       levels: disabled
-    # Errors
     - output: "errors.log"
       levels: "error|warning"
       apiLevels: disabled
@@ -83,30 +79,29 @@ auth:
   methods:
     noauth: true
 userDefaults:
-  editorQuickSave: true
-  hideSidebarFileActions: false
-  disableQuickToggles: false
-  disableSearchOptions: false
-  darkMode: false
-  locale: "en"
-  showHidden: true
-  quickDownload: true
+  fileViewer:
+    editorQuickSave: true
+    autoplayMedia: true
+  sidebar:
+    disableQuickToggles: false
+  search:
+    disableOptions: false
+  ui:
+    darkMode: false
+    locale: "en"
+  listing:
+    showHidden: true
+    quickDownload: true
   preview:
-    disableHideSidebar: false
     highQuality: true
     image: true
     video: true
     motionVideoPreview: true
     popup: true
-    autoplayMedia: true
-    defaultMediaPlayer: false
     folder: true
-  permissions:
-    api: true
-    admin: true
-    modify: true
-    share: true
-    realtime: true
-    delete: true
-    create: true
-    download: true
+  account:
+    permissions:
+      api: true
+      admin: true
+      share: true
+      realtime: true

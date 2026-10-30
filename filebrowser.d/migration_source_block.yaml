@@ -1,15 +1,15 @@
     - path: "/srv/migrator"
       name: "Migrator Storage"
-      readOnly: false
       config:
         denyByDefault: false
         private: false
         disabled: false
-        indexingIntervalMinutes: 0
-        disableIndexing: false
-        conditionals:
-          hidden: false
-          ignoreHidden: false
-          ignoreZeroSizeFolders: false
         defaultEnabled: true
         createUserDir: false
+        defaultPermissions:
+          view: true
+          download: true
+          modify: true
+          delete: true
+          create: true
+          configured: true

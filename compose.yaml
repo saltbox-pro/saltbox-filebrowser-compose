@@ -29,9 +29,6 @@ services:
     image: "${IMAGE_REGISTRY}/saltbox-filebrowser-compose/proxy:${FILEBROWSER_PROXY_IMAGE_TAG}"
     environment:
       FILEBROWSER_UPSTREAM: "saltbox-filebrowser:80"
-      READONLY_MAP_PATH: "/srv/filebrowser-meta/data/readonly.json"
-    volumes:
-      - "filebrowser_db:/srv/filebrowser-meta:ro"
     depends_on:
       saltbox-filebrowser:
         condition: service_started
