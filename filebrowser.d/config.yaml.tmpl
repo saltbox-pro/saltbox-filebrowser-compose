@@ -69,12 +69,12 @@ ${MIGRATOR_SOURCE_BLOCK}
   logging:
     - output: stdout
       levels: "info|warning|error"
-      apiLevels: disabled
+      apiLevels: enabled
     - output: "api-events.log"
-      levels: disabled
+      levels: enabled
     - output: "errors.log"
       levels: "error|warning"
-      apiLevels: disabled
+      apiLevels: enabled
 auth:
   methods:
     noauth: true

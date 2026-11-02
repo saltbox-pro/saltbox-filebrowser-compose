@@ -36,7 +36,7 @@ manager for Salt files to the Salt.Box UI. It is based on the third-party
 | `saltbox-filebrowser`         | FileBrowser itself, serves the Salt files directories                   |
 | `saltbox-filebrowser-proxy`   | Nginx in front of FileBrowser, injects the `readOnly` flag of every source into the `/public/api/users` response |
 | `saltbox-filebrowser-adapter` | Registers FileBrowser in the Salt.Box Gateway via discovery             |
-| `saltbox-filesystem-frontend` | Salt.Box UI module of the file manager                                  |
+| `saltbox-filebrowser-frontend` | Salt.Box UI module of the file manager                                  |
 
 The Gateway talks to FileBrowser through the proxy, not directly.
 

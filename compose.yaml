@@ -60,7 +60,7 @@ services:
         condition: service_started
         restart: false
 
-  saltbox-filesystem-frontend:
+  saltbox-filebrowser-frontend:
     <<: *default
     image: "${IMAGE_REGISTRY}/saltbox-filebrowser-frontend:${FILEBROWSER_FRONTEND_IMAGE_TAG}"
     expose:

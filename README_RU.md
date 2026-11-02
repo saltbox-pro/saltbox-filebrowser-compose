@@ -36,7 +36,7 @@
 | `saltbox-filebrowser`         | Сам FileBrowser, отдаёт каталоги с файлами Salt                         |
 | `saltbox-filebrowser-proxy`   | Nginx перед FileBrowser, добавляет флаг `readOnly` каждого источника в ответ `/public/api/users` |
 | `saltbox-filebrowser-adapter` | Регистрирует FileBrowser в Gateway Salt.Box через discovery             |
-| `saltbox-filesystem-frontend` | Модуль файлового менеджера в веб-интерфейсе Salt.Box                    |
+| `saltbox-filebrowser-frontend` | Модуль файлового менеджера в веб-интерфейсе Salt.Box                    |
 
 Gateway обращается к FileBrowser через прокси, а не напрямую.
 
