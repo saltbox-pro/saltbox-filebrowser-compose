@@ -17,7 +17,7 @@ services:
     environment:
       MIGRATION_SOURCE_ENABLED: '${FILEBROWSER_MIGRATOR_SOURCE_ENABLED:-false}'
     volumes:
-      - "filebrowser_db:/home/filebrowser"
+      - "filebrowser_data:/home/filebrowser/data/"
       - "${SALT_MASTER_STORAGE_PATH}:/srv/salt_custom/"
       - "${SSHFS_STORAGE_PATH}:/srv/sshfs:ro"
       - "${SSHFS_MIGRATION_PATH}:/srv/migrator/"
@@ -67,5 +67,5 @@ services:
       - ${FRONTEND_HTTP_PORT}
 
 volumes:
-  filebrowser_db:
+  filebrowser_data:
     external: false
